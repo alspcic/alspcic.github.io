@@ -14,12 +14,17 @@ function nextSequence() {
   userClickedPattern = [];
   level++;
   $("h1").text("Level " + level);
-  var randomNumber = Math.floor(Math.random() * 4);
 
-  randomChosenColour = buttonColours[randomNumber];
+  randomChosenColour = buttonColours[Math.floor(Math.random() * 4)];
   gamePattern.push(randomChosenColour);
   var audio = new Audio("sounds/click.mp3");
   audio.volume = 0.2;
+
+  if (cheater) {
+    var lastElement =  gamePattern[gamePattern.length - 1];
+    $("h2").append("<span class=cheat_" + lastElement + ">" + lastElement + '</span><span>' + ", " + '</span>');
+    $(".cheat_" + lastElement).css('color', lastElement);
+  }
 
   $("#" + randomChosenColour).fadeOut(100).fadeIn(100).on("click", function() {
     audio.play();
@@ -27,34 +32,38 @@ function nextSequence() {
 }
 
 $(".btn").on("click", function(event) {
-  userChosenColour = event.target.id;
+  var userChosenColour = event.target.id;
   userClickedPattern.push(userChosenColour);
   animatePress(userChosenColour);
   checkAnswer(userClickedPattern.length - 1);
   parent.push(userChosenColour);
 
-  if (!cheater) {
-    for (var i = 0; i < parent.length; i++) {
-      if (parent[i] === cheatCode[0]) {
-        if (parent[i + 1] === cheatCode[1]) {
-          if (parent[i + 2] === cheatCode[2]) {
-            if (parent[i + 3] === cheatCode[3]) {
-              alarm.volume = 0.2;
-              alarm.play();
-              $("h1").text(cheatCodeText).addClass("alarm");
-              cheater = true;
-            }
-          }
-        }
-      }
+  if (!cheater && parent.length >= 4) {
+    cheatCodeActivated();
+  }
+});
+
+function cheatCodeActivated() {
+  var newParent = parent.slice(parent.length - 4);
+  var count = 0;
+  var count2 = 0;
+  for (var i = 0; i < newParent.length; i++) {
+    if (newParent[i] === cheatCode[i]) {
+      count++;
+    } else if (newParent[i] === cheatCode[cheatCode.length - 1 - i]) {
+      count2++;
     }
   }
-
-  if (cheater) {
-    $("h2").text(gamePattern);
+  if (count == cheatCode.length) {
+    window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   }
-
-});
+  if (count2 == cheatCode.length) {
+    alarm.volume = 0.2;
+    alarm.play();
+    $("h1").text(cheatCodeText).addClass("alarm");
+    cheater = true;
+  }
+}
 
 function animatePress(userChosenColour) {
   $(".btn#" + userChosenColour).addClass("pressed");
@@ -102,7 +111,6 @@ function checkAnswer(currentLevel) {
     }, 200);
     startOver();
   }
-
 }
 
 function startOver() {
@@ -110,4 +118,5 @@ function startOver() {
   gamePattern = [];
   started = false;
   $("h1").text("Game Over, Press Any Key to Start");
+  $("h2").empty();
 }
