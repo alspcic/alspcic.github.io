@@ -19,6 +19,7 @@ function nextSequence() {
   randomChosenColour = buttonColours[randomNumber];
   gamePattern.push(randomChosenColour);
   var audio = new Audio("sounds/click.mp3");
+  audio.volume = 0.2;
 
   $("#" + randomChosenColour).fadeOut(100).fadeIn(100).on("click", function() {
     audio.play();
@@ -38,6 +39,7 @@ $(".btn").on("click", function(event) {
         if (parent[i + 1] === cheatCode[1]) {
           if (parent[i + 2] === cheatCode[2]) {
             if (parent[i + 3] === cheatCode[3]) {
+              alarm.volume = 0.2;
               alarm.play();
               $("h1").text(cheatCodeText).addClass("alarm");
               cheater = true;
@@ -92,6 +94,7 @@ function checkAnswer(currentLevel) {
     }
   } else {
     var audio = new Audio("sounds/wrong.mp3");
+    audio.volume = 0.2;
     audio.play();
     $("body").addClass("game-over");
     setTimeout(function() {
