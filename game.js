@@ -9,6 +9,40 @@ var cheatCodeText = "Cheat code activated, press any key to restart the game";
 var cheater = false;
 var alarm = new Audio("sounds/alarm.mp3");
 var randomChosenColour = "";
+var newCheatCode = [];
+
+function randomizeCheatCode() {
+  for (var i = 0; i < cheatCode.length; i++) {
+    var random = Math.floor(Math.random() * 4);
+    while (newCheatCode.includes(cheatCode[random])) {
+      random = Math.floor(Math.random() * 4);
+    }
+    newCheatCode.push(cheatCode[random]);
+    console.log(newCheatCode);
+  }
+}
+
+$("document").ready(function() {
+  randomizeCheatCode();
+  var myNumbers = [];
+  var index;
+  for (var i = 0; i < newCheatCode.length; i++) {
+    index = Math.floor(Math.random() * 8);
+    while (myNumbers.includes(index)) {
+      index = Math.floor(Math.random() * 8);
+    }
+    myNumbers.push(index);
+    myNumbers.sort();
+    console.log(myNumbers);
+    }
+    for (var i = 0; i < newCheatCode.length; i++) {
+      var element = $("span.letter");
+      $(element[myNumbers[i]]).css('color', newCheatCode[i]);
+    }
+});
+
+
+
 
 function nextSequence() {
   userClickedPattern = [];
@@ -48,20 +82,20 @@ function cheatCodeActivated() {
   var count = 0;
   var count2 = 0;
   for (var i = 0; i < newParent.length; i++) {
-    if (newParent[i] === cheatCode[i]) {
+    if (newParent[i] === newCheatCode[i]) {
       count++;
-    } else if (newParent[i] === cheatCode[cheatCode.length - 1 - i]) {
+    } else if (newParent[i] === newCheatCode[newCheatCode.length - 1 - i]) {
       count2++;
     }
   }
-  if (count == cheatCode.length) {
-    window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-  }
-  if (count2 == cheatCode.length) {
+  if (count == newCheatCode.length) {
     alarm.volume = 0.2;
     alarm.play();
     $("h1").text(cheatCodeText).addClass("alarm");
     cheater = true;
+  }
+  if (count2 == newCheatCode.length) {
+    window.location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   }
 }
 
